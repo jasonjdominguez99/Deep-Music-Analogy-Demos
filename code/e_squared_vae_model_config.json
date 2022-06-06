@@ -6,9 +6,12 @@
     "decay": 0.9999,
     "if_parallel": true,
     "name": "cdvae_2bar",
+    "roll_dim": 130,
     "hidden_dim": 2048,
-    "pitch_dim": 128,
-    "rhythm_dim": 128,
+    "rhythm_dim": 3,
+    "condition_dims": 12,
+    "z1_dim": 128,
+    "z2_dim": 128,
     "beta": 0.1,
     "time_step": 32
 }

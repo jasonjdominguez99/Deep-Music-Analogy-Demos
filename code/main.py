@@ -36,8 +36,11 @@ def configure_model(config_file_path):
     save_path = "../params/{}.pt".format(args["name"])
     writer = SummaryWriter("../log/{}".format(args["name"]))
 
-    model = ESquaredVAE(130, args["hidden_dim"], 3, 12, args["pitch_dim"],
-                        args["rhythm_dim"], args["time_step"])
+    model = ESquaredVAE(
+        args["roll_dim"], args["hidden_dim"], args["rhythm_dim"], 
+        args["condition_dim"], args["pitch_dim"],
+        args["rhythm_dim"], args["time_step"]
+    )
 
     if args["if_parallel"]:
         model = torch.nn.DataParallel(model, device_ids=[0, 1])
