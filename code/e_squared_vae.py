@@ -1,27 +1,37 @@
+# e_squared_vae.py
+#
+# source code for defining the EC^2 VAE model
+
+
+# imports
 import torch
 from torch import nn
 from torch.nn import functional as F
 from torch.distributions import Normal
 
 
-class VAE(nn.Module):
+# class definition
+class ESquaredVAE(nn.Module):
     def __init__(self, roll_dims, hidden_dims, rhythm_dims,
                  condition_dims, z1_dims, z2_dims, n_step,
                  k=1000):
 
-        super(VAE, self).__init__()
+        super(ESquaredVAE, self).__init__()
 
         self.gru_0 = nn.GRU(
             roll_dims + condition_dims,
             hidden_dims,
             batch_first=True,
-            bidirectional=True)
+            bidirectional=True
+        )
         self.linear_mu = nn.Linear(hidden_dims * 2, z1_dims + z2_dims)
         self.linear_var = nn.Linear(hidden_dims * 2, z1_dims + z2_dims)
         self.grucell_0 = nn.GRUCell(z2_dims + rhythm_dims,
                                     hidden_dims)
         self.grucell_1 = nn.GRUCell(
-            z1_dims + roll_dims + rhythm_dims + condition_dims, hidden_dims)
+            z1_dims + roll_dims + rhythm_dims + condition_dims, 
+            hidden_dims
+        )
         self.grucell_2 = nn.GRUCell(hidden_dims, hidden_dims)
         self.linear_init_0 = nn.Linear(z2_dims, hidden_dims)
         self.linear_out_0 = nn.Linear(hidden_dims, rhythm_dims)
@@ -63,8 +73,10 @@ class VAE(nn.Module):
         mu = self.linear_mu(x)
         var = self.linear_var(x).exp_()
 
-        distribution_1 = Normal(mu[:, :self.z1_dims], var[:, :self.z1_dims])
-        distribution_2 = Normal(mu[:, self.z1_dims:], var[:, self.z1_dims:])
+        distribution_1 = Normal(mu[:, :self.z1_dims],
+                                var[:, :self.z1_dims])
+        distribution_2 = Normal(mu[:, self.z1_dims:],
+                                var[:, self.z1_dims:])
 
         return distribution_1, distribution_2
 
@@ -109,7 +121,9 @@ class VAE(nn.Module):
             out = out.cuda()
 
         for i in range(self.n_step):
-            out = torch.cat([out, rhythm[:, i, :], z, condition[:, i, :]], 1)
+            out = torch.cat(
+                [out, rhythm[:, i, :], z, condition[:, i, :]], 1
+            )
             hx[0] = self.grucell_1(out, hx[0])
 
             if i == 0:
@@ -153,8 +167,8 @@ class VAE(nn.Module):
         z2 = dis2.rsample()
         recon_rhythm = self.rhythm_decoder(z2)
         recon = self.final_decoder(z1, recon_rhythm, condition)
-        
-        output = (recon, recon_rhythm, dis1.mean, dis1.stddev, dis2.mean,
-                  dis2.stddev)
 
-        return output
+        return (
+            recon, recon_rhythm, dis1.mean,
+            dis1.stddev, dis2.mean, dis2.stddev
+        )
