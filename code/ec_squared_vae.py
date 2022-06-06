@@ -11,12 +11,12 @@ from torch.distributions import Normal
 
 
 # class definition
-class ESquaredVAE(nn.Module):
+class ECSquaredVAE(nn.Module):
     def __init__(self, roll_dims, hidden_dims, rhythm_dims,
                  condition_dims, z1_dims, z2_dims, n_step,
                  k=1000):
 
-        super(ESquaredVAE, self).__init__()
+        super(ECSquaredVAE, self).__init__()
 
         self.gru_0 = nn.GRU(
             roll_dims + condition_dims,

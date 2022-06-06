@@ -8,7 +8,7 @@
 import json
 import os
 
-from e_squared_vae import ESquaredVAE
+from ec_squared_vae import ECSquaredVAE
 from utils import (
     MinExponentialLR, std_normal, loss_function
 )
@@ -36,7 +36,7 @@ def configure_model(config_file_path):
     save_path = "../params/{}.pt".format(args["name"])
     writer = SummaryWriter("../log/{}".format(args["name"]))
 
-    model = ESquaredVAE(
+    model = ECSquaredVAE(
         args["roll_dim"], args["hidden_dim"], args["rhythm_dim"], 
         args["condition_dim"], args["pitch_dim"],
         args["rhythm_dim"], args["time_step"]
@@ -122,7 +122,7 @@ def train(model, args, writer, scheduler, step, dl, optimizer):
 
 
 def main():
-    config_fname = "e_squared_vae_model_config.json"
+    config_fname = "ec_squared_vae_model_config.json"
 
     (model, args, save_path, writer, scheduler,
      step, pre_epoch, dl, optimizer) = configure_model(config_fname)
