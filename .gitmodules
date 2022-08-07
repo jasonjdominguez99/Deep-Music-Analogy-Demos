@@ -1,0 +1,3 @@
+[submodule "nottingham_dataset"]
+	path = nottingham_dataset
+	url = git@github.com:jasonjdominguez99/nottingham_dataset.git
