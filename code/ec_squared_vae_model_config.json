@@ -1,7 +1,8 @@
 {
     "batch_size": 128,
     "n_epochs": 100,
-    "data_path": "/scratch/ry649/VAE_data/data_merge/data.npy",
+    "unprocessed_data_directory": "C:/Users/2080ti/Documents/university/phd/data/nottingham/unprocessed",
+    "data_path": "C:/Users/2080ti/Documents/university/phd/data/nottingham/processed/data.npy",
     "lr": 1e-3,
     "decay": 0.9999,
     "if_parallel": true,
