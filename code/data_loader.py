@@ -35,8 +35,8 @@ class MusicArrayLoader():
         return clipped_melodies, clipped_chords
 
     def chunking(self):
-        for melody, chord in zip(self.dataset[0], self.dataset[1]):
-            # melody.shape = (N, 130), chord.shape = (N, 12)
+        for melody, chord in zip(self.dataset[()]['melodies'], self.dataset[()]['chords']):
+            # melody.shape = (N, 130), chord.shape = (N, 12) N is length of individual example i.e. 32
             m, c = self.__clipping(melody, chord)
             self.__chunk_melodies += m
             self.__chunk_chords += c
