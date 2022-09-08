@@ -210,15 +210,24 @@ def make_instance_pkl_files(root_dir, midi_dir, num_bars, frame_per_bar, pitch_r
                 if (cont_rest >= 30) or (len(set(pitch_list)) <= 5):
                     continue
 
-                pitch_list = np.array(pitch_list)
+                # convert pitch list to one-hot vectors with additional held-note and rest info
+                # size N x 130, 128 pitches, 1 held-note and 1 rest        
+                pitch_info = []
+                for pitch in pitch_list:
+                    one_hot_pitch = np.zeros(pitch_range + 2)
+                    one_hot_pitch[pitch] = 1.
+                    pitch_info.append(one_hot_pitch)
+                    
+                pitch_info = csc_matrix(np.array(pitch_info))
                 chord_result = csc_matrix(np.array(chord_list))
-                result = {'pitch': pitch_list,
-                          'rhythm': rhythm_idx,
+                
+                result = {'pitch': pitch_info,
                           'chord': chord_result}
-                if 0 in result['rhythm']:
-                    print()
-                    print(result)
-                    print()
+                    
+                print()
+                print(result)
+                print()
+                    
                 ps = ('%d' % k) if (k < 0) else ('+%d' % k)
                 pkl_filename = os.path.join(dir_name, mode, song_title, '%s_%02d_%s_%02d.pkl' % (song_title, key_count, ps, i // stride))
                 with open(pkl_filename, 'wb') as f:
