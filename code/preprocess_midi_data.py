@@ -76,14 +76,19 @@ def make_instance_pkl_files(root_dir, midi_dir, num_bars, frame_per_bar, pitch_r
 
     instance_len = frame_per_bar * num_bars
     print(instance_len)
-    stride = int(instance_len / 2)
+    # stride = int(instance_len / 2)
+    stride = instance_len
+    print(stride)
     # Default : frame_per_second=8, unit_time=0.125
     frame_per_second = (frame_per_bar / beat_per_bar) * (bpm / 60)
     unit_time = 1 / frame_per_second
 
     song_list = sorted(glob.glob(os.path.join(root_dir, midi_dir, '*')))
+    # print(song_list)
+    # print(len(song_list))
     print(os.path.join(root_dir, midi_dir, '*.mid'))
     midi_files = sorted(glob.glob(os.path.join(root_dir, midi_dir, '*.mid')))
+    print(len(midi_files))
 
     num_eval = int(len(song_list) * data_ratio[1])
     num_test = int(len(song_list) * data_ratio[2])
@@ -92,7 +97,10 @@ def make_instance_pkl_files(root_dir, midi_dir, num_bars, frame_per_bar, pitch_r
     eval_set = random.sample(eval_test_cand, num_eval)
     test_set = random.sample(eval_test_cand - set(eval_set), num_test)
 
-    for midi_file in tqdm(midi_files, desc="Processing"):
+    pitches = []
+    chords = []
+
+    for midi_file in tqdm(midi_files[:5], desc="Processing"):
         song_title = midi_file.split('/')[-2]
         filename = midi_file.split('/')[-1].split('.')[0]
 
@@ -218,20 +226,51 @@ def make_instance_pkl_files(root_dir, midi_dir, num_bars, frame_per_bar, pitch_r
                     one_hot_pitch[pitch] = 1.
                     pitch_info.append(one_hot_pitch)
                     
-                pitch_info = csc_matrix(np.array(pitch_info))
-                chord_result = csc_matrix(np.array(chord_list))
+                    
+                pitch_info = np.array(pitch_info)
+                chord_result = np.array(chord_list)
                 
-                result = {'pitch': pitch_info,
-                          'chord': chord_result}
+                pitches.append(pitch_info)
+                chords.append(chord_result)
+                
+                # print()
+                # print(len(pitches))
+                # print(len(chords))
+                # print(chords)
+                # print()
                     
-                print()
-                print(result)
-                print()
+                # pitch_info = csc_matrix(np.array(pitch_info))
+                # chord_result = csc_matrix(np.array(chord_list))
+                
+                # result = {'pitch': pitch_info,
+                #           'chord': chord_result}
                     
-                ps = ('%d' % k) if (k < 0) else ('+%d' % k)
-                pkl_filename = os.path.join(dir_name, mode, song_title, '%s_%02d_%s_%02d.pkl' % (song_title, key_count, ps, i // stride))
-                with open(pkl_filename, 'wb') as f:
-                    pickle.dump(result, f)
+                # print()
+                # print(result)
+                # print()
+                    
+                # ps = ('%d' % k) if (k < 0) else ('+%d' % k)
+                # pkl_filename = os.path.join(dir_name, mode, song_title, '%s_%02d_%s_%02d.pkl' % (song_title, key_count, ps, i // stride))
+                # with open(pkl_filename, 'wb') as f:
+                #     pickle.dump(result, f)
+
+    pitches = np.array(pitches)
+    chord_result = np.array(chords)
+    
+    print()
+    print(pitches.shape)
+    print()
+    print(chord_result.shape)
+    print()
+    
+    data = {
+        'pitch': pitches,
+        'chord': chords
+    }
+    
+    # save data here
+    save_file_path = "ec_squared_vae/processed_data"
+    np.save(save_file_path, data)
 
 
 if __name__ == '__main__':
