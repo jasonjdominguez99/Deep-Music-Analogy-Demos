@@ -27,19 +27,19 @@ def configure_model(config_file_path):
     with open(config_file_path) as f:
         args = json.load(f)
 
-    if not os.path.isdir("log"):
-        os.mkdir("log")
+    if not os.path.isdir("ec_squared_vae/log"):
+        os.mkdir("ec_squared_vae/log")
 
-    if not os.path.isdir("params"):
-        os.mkdir("params")
+    if not os.path.isdir("ec_squared_vae/params"):
+        os.mkdir("ec_squared_vae/params")
 
-    save_path = "../params/{}.pt".format(args["name"])
-    writer = SummaryWriter("../log/{}".format(args["name"]))
+    save_path = "ec_squared_vae/params/{}.pt".format(args["name"])
+    writer = SummaryWriter("ec_squared_vae/log/{}".format(args["name"]))
 
     model = ECSquaredVAE(
         args["roll_dim"], args["hidden_dim"], args["rhythm_dim"], 
-        args["condition_dim"], args["pitch_dim"],
-        args["rhythm_dim"], args["time_step"]
+        args["condition_dims"], args["z1_dim"],
+        args["z2_dim"], args["time_step"]
     )
 
     if args["if_parallel"]:
@@ -122,7 +122,7 @@ def train(model, args, writer, scheduler, step, dl, optimizer):
 
 
 def main():
-    config_fname = "ec_squared_vae_model_config.json"
+    config_fname = "ec_squared_vae/code/ec_squared_vae_model_config.json"
 
     (model, args, save_path, writer, scheduler,
      step, pre_epoch, dl, optimizer) = configure_model(config_fname)
