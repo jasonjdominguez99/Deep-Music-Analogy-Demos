@@ -28,6 +28,7 @@ class MusicArrayLoader():
         len_m = melody.shape[0]
         len_c = chord.shape[0]
         assert (len_m == len_c)
+        # print(self.__length)
         for i in range(0, len_m, self.__step_size):
             if ((i + self.__length) < len_m) and (melody[i, 128] != 1):
                 clipped_melodies.append(melody[i:i + self.__length])
@@ -35,11 +36,15 @@ class MusicArrayLoader():
         return clipped_melodies, clipped_chords
 
     def chunking(self):
-        for melody, chord in zip(self.dataset[()]['melodies'], self.dataset[()]['chords']):
+        for melody, chord in zip(self.dataset[()]['pitch'], self.dataset[()]['chord']):
             # melody.shape = (N, 130), chord.shape = (N, 12) N is length of individual example i.e. 32
-            m, c = self.__clipping(melody, chord)
-            self.__chunk_melodies += m
-            self.__chunk_chords += c
+            # m, c = self.__clipping(melody, chord)
+            # self.__chunk_melodies += m
+            # self.__chunk_chords += c
+            print(melody.shape)
+            self.__chunk_melodies += [melody]
+            self.__chunk_chords += [chord]
+            
         self.__chunk_melodies = np.asarray(self.__chunk_melodies)
         self.__chunk_chords = np.asarray(self.__chunk_chords)
         assert (len(self.__chunk_melodies) == len(self.__chunk_chords))
