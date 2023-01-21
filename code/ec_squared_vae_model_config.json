@@ -1,8 +1,9 @@
 {
     "batch_size": 128,
     "n_epochs": 100,
-    "unprocessed_data_dir": "ec_squared_vae/nottingham_dataset/midi",
-    "data_path": "ec_squared_vae/processed_data.npy",
+    "unprocessed_data_dir": "./nottingham_dataset/midi",
+    "midi_dir": "melody_and_chords",
+    "data_path": "processed_data.npy",
     "lr": 1e-3,
     "decay": 0.9999,
     "if_parallel": true,
@@ -14,5 +15,8 @@
     "z1_dim": 128,
     "z2_dim": 128,
     "beta": 0.1,
-    "time_step": 32
+    "time_step": 32,
+    "num_bars": 8,
+    "frame_per_bar": 16,
+    "pitch_range": 48
 }
